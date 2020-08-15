@@ -5,8 +5,15 @@ data_dir <- file.path("./data")
 
 #Claudia
 #only run this part once
-key_path <- "~/.ssh"
-ssh_keygen(path = key_path)
+key_path <- file.path("~/.ssh")
+
+cyphr::data_request_access(data_dir, key_path)
+
+
+#if this doesn't work then you don't have an ssh key set up and we need to create one
+#ssh_keygen(path = key_path)
+
+
 cyphr::data_admin_init("./data", path_user = key_path)
 req <- cyphr::data_admin_list_requests(data_dir)
 
