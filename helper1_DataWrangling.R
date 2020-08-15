@@ -288,7 +288,7 @@ names(checked) <- df$Ref
  
 PASS0 <- ''
 
-PASS <- cyphr::decrypt(readRDS(paste0(dirShinydata, "password_analysis")), cyphr::data_key(dirShinydata))
+PASS <- cyphr::decrypt(readRDS(paste0(dirShinydata, "password_analysis.rds")), cyphr::data_key(dirShinydata))
  
 ## Confirming estimates:  
 # Sampling weights   - National Expanded
