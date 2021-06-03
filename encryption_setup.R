@@ -1,4 +1,5 @@
 library(cyphr)
+library(openssl)
 
 data_dir <- file.path("./data")
 
@@ -14,11 +15,12 @@ cyphr::data_request_access(data_dir, key_path)
 #ssh_keygen(path = key_path)
 
 
-cyphr::data_admin_init("./data", path_user = key_path)
-req <- cyphr::data_admin_list_requests(data_dir)
+# cyphr::data_admin_init("./data", path_user = key_path)
+# req <- cyphr::data_admin_list_requests(data_dir)
 
 
 #run this before loading the app on your local machine.
+key_path <- file.path("~/.ssh")
 key <- cyphr::data_key("data", path_user = key_path)
 
 
@@ -36,25 +38,39 @@ key <- cyphr::data_key("data", path_user = key_path)
 
 
 #only need to run this encrypt files when updating survey data after updating
-# cyphr::encrypt(saveRDS(
-#     cyphr::decrypt(
-#       readRDS("./data/youth2019.rds"),
-#       cyphr::key_sodium(sha256(charToRaw(askpass("Please enter password:"))))),
-#   "./data/youth2019.rds"),
-#   key)
+cyphr::encrypt(saveRDS(
+    cyphr::decrypt(
+      readRDS("./data/youth2019.rds"),
+      cyphr::key_sodium(sha256(charToRaw(askpass("Please enter password:"))))),
+  "./data/youth2019.rds"),
+  key)
 # 
 # 
-# cyphr::encrypt(saveRDS(
-#   readRDS(
-#     "./data/sample_weights2019.rds"),
-#   "./data/sample_weights2019.rds"),
-#   key)
-# 
-# 
-# cyphr::encrypt(saveRDS(
-#   readRDS(
-#     "./data/ECschoolData2019.rds"),
-#   "./data/ECschoolData2019.rds"),
-#   key)
-# 
+cyphr::encrypt(saveRDS(
+  readRDS(
+    "./data/sample_weights2019.rds"),
+  "./data/sample_weights2019.rds"),
+  key)
 
+
+cyphr::encrypt(saveRDS(
+  readRDS(
+    "./data/ECschoolData2019.rds"),
+  "./data/ECschoolData2019.rds"),
+  key)
+
+
+cyphr::encrypt(saveRDS(
+  cyphr::decrypt(
+    readRDS("./data/youth2019.rds"),
+    cyphr::key_sodium(sha256(charToRaw(askpass("Please enter password:"))))),
+  "./data/youth2019.rds"),
+  key)
+
+
+
+cyphr::decrypt(readRDS(paste0(dirShinydata, "sample_weights2019.rds")), cyphr::data_key(dirShinydata))
+
+
+
+cyphr::encrypt(saveRDS(PASS, "data/password_analysis.rds"), cyphr::key_sodium(openssl::sha256(keyring::key_get_raw("youth19_secret"))))
