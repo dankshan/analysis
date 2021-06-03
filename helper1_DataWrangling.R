@@ -24,14 +24,14 @@ keyring_unlock(password = "")
  
 Y19_sample_weights <- 
   cyphr::decrypt(
-    readRDS(paste0(dirShinydata, "sample_weights2019.rds")), 
+    readRDS(paste0(dirShinydata, "sample_weights2019.rds")),
     cyphr::key_sodium(openssl::sha256(charToRaw(keyring::key_get("youth19_secret"))))
   )
   
 
 DataNational        <-  
   cyphr::decrypt(
-    readRDS(paste0(dirShinydata, "ECschoolData2019.rds")), 
+    readRDS(paste0(dirShinydata, "ECschoolData2019.rds")),
     cyphr::key_sodium(openssl::sha256(charToRaw(keyring::key_get("youth19_secret"))))
   )
 
@@ -40,7 +40,7 @@ DataNational        <-
 #DataNational <-  ECschoolData2019 
 Y19SampleIndividual  <- 
   cyphr::decrypt(
-    readRDS(paste0(dirShinydata, "youth2019.rds")), 
+    readRDS(paste0(dirShinydata, "youth2019.rds")),
     cyphr::key_sodium(openssl::sha256(charToRaw(keyring::key_get("youth19_secret"))))
   )
   
@@ -307,7 +307,7 @@ PASS0 <- ''
 
 PASS <- 
   cyphr::decrypt(
-    readRDS(paste0(dirShinydata, "password_analysis.rds")), 
+    readRDS(paste0(dirShinydata, "password_analysis.rds")),
     cyphr::key_sodium(openssl::sha256(charToRaw(keyring::key_get("youth19_secret"))))
   )
 
