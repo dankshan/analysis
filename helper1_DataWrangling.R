@@ -16,17 +16,34 @@
 dirShinydata<-   'data/'
  
 
+keyring_unlock(password = "")
 
  
 ## Create survey data with weights:   
 
  
-Y19_sample_weights <- cyphr::decrypt(readRDS(paste0(dirShinydata, "sample_weights2019.rds")), cyphr::data_key(dirShinydata))
+Y19_sample_weights <- 
+  cyphr::decrypt(
+    readRDS(paste0(dirShinydata, "sample_weights2019.rds")), 
+    cyphr::key_sodium(openssl::sha256(keyring::key_get_raw("youth19_secret")))
+  )
+  
 
-DataNational        <-  cyphr::decrypt(readRDS(paste0(dirShinydata, "ECschoolData2019.rds")), cyphr::data_key(dirShinydata))
+DataNational        <-  
+  cyphr::decrypt(
+    readRDS(paste0(dirShinydata, "ECschoolData2019.rds")), 
+    cyphr::key_sodium(openssl::sha256(keyring::key_get_raw("youth19_secret")))
+  )
+
+
 
 #DataNational <-  ECschoolData2019 
-Y19SampleIndividual  <- cyphr::decrypt(readRDS(paste0(dirShinydata, "youth2019.rds")), cyphr::data_key(dirShinydata))
+Y19SampleIndividual  <- 
+  cyphr::decrypt(
+    readRDS(paste0(dirShinydata, "youth2019.rds")), 
+    cyphr::key_sodium(openssl::sha256(keyring::key_get_raw("youth19_secret")))
+  )
+  
   
 ## Strata 
 
@@ -165,8 +182,8 @@ NReg                  <- sum(RegionalData$TotalRoll)
 
 
 ## NAtional Totals to be calibrated to  
-NationalTotalsCal        <- c(colSums(cbind(DataNational[,VarCal])))
-RegionalTotalsCal        <- c(colSums(cbind(RegionalData[,VarCal])))
+NationalTotalsCal        <- c(colSums(cbind(DataNational[,VarCalWha])))
+RegionalTotalsCal        <- c(colSums(cbind(RegionalData[,VarCalWha])))
 
 # This is just to get the school weights,  
  
@@ -176,7 +193,7 @@ RegionalTotalsCal        <- c(colSums(cbind(RegionalData[,VarCal])))
 des1Nat       <-  svydesign(id=~id2,  strata=~strata, weights = ~  weightNational,   data=  Y19SampleIndividual2  )
 des1Regional  <-  svydesign(id=~id2,  strata=~strata, weights = ~  weightRegional,   data=  Y19SampleIndividual2  )
 
-formcal      <- formula(paste( '~', paste(VarCal  , collapse = '+'))  )
+formcal      <- formula(paste( '~', paste(VarCalWha  , collapse = '+'))  )
 desCalNat    <- calibrate(des1Nat,   formcal  , c(N,NationalTotalsCal ),calfun=c( "raking" )  )  ## raking for positive weights
 desCalReg    <- calibrate(des1Regional,   formcal  , c(NReg ,RegionalTotalsCal ),calfun=c( "raking" )  )  ## raking for positive weights
 
@@ -288,7 +305,13 @@ names(checked) <- df$Ref
  
 PASS0 <- ''
 
-PASS <- cyphr::decrypt(readRDS(paste0(dirShinydata, "password_analysis.rds")), cyphr::data_key(dirShinydata))
+PASS <- 
+  cyphr::decrypt(
+    readRDS(paste0(dirShinydata, "password_analysis.rds")), 
+    cyphr::key_sodium(openssl::sha256(keyring::key_get_raw("youth19_secret")))
+  )
+
+
  
 ## Confirming estimates:  
 # Sampling weights   - National Expanded
@@ -297,4 +320,6 @@ PASS <- cyphr::decrypt(readRDS(paste0(dirShinydata, "password_analysis.rds")), c
 #svytotal(~as.factor(Decile), desCalNat)
 
 #aggregate(DataNational$TotalRoll~ DataNational$Decile, FUN='sum')
+
+keyring_lock()
  

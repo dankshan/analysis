@@ -12,6 +12,7 @@ library(ggplot2)
 library(InformationValue)
 library(cyphr)
 library(openssl)
+library(keyring)
 #dir0 <- '/Users/criv292/DropboxPersonal/Dropbox (Uni of Auckland)/CRR-DropBox/Y19_Weighting/weighting/surveydata/'
 #dir0a <- '/Users/criv292/DropboxPersonal/Dropbox (Uni of Auckland)/CRR-DropBox/Y19_Weighting/weighting/educationcounts/'
 #SurveyPath <- "/Users/criv292/DropboxPersonal/Dropbox (Uni of Auckland)/CRR-DropBox/Y19_Weighting/data/youth2019.rds"
